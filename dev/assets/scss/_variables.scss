@@ -1,0 +1,35 @@
+$ceragrlight			:	"ceragrlight";
+$ceragrbold				:	"ceragrbold";
+$caveatbold				:	"caveatbold";
+$caveatregular			:	"caveatregular";
+$playfairdisplay		:	"playfair_displayregular";
+$rubikregular			:	"rubikregular";
+
+$black 					:	#000000;
+$grey 					:	#9E9E9E;
+/*$green		 			:#5D9632;
+$lightgreen		 		:	#FFC33C;*/
+$white 					: 	#ffffff;
+$fontblack 				: 	#3B3734;
+$red 					: 	#E03A3E;
+$orange					:	#FFC33C;
+$darkorange				:	#FFC33C;
+
+
+$images 				:	'../images';
+$images_svg				:	'../images/icons';
+$fonts					:	'../fonts';
+
+$ceraFixbold			:	normal 15px/25px $ceragrbold;
+$ceraFixlight			:	normal 15px/25px $ceragrlight;
+
+
+$media_min_sm			:	'min-width:991px';
+$media_max_1220			:	'max-width:1220px';
+$media_max_1200			:	'max-width:1200px';
+$media_max_1150			:	'max-width:1150px';
+$media_max_1050			:	'max-width:1050px';
+$media_max_sm 			:	'max-width:991px';
+$media_max_xs 			:	'max-width:767px';
+$media_max_550 			:	'max-width:550px';
+$media_max_350 			:	'max-width:350px';

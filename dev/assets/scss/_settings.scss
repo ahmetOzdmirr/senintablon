@@ -1,0 +1,106 @@
+.fancybox-bg{background: rgba(0,0,0,0.9)}
+.dropdown-backdrop{display: none}
+
+/**********************991menu***********************/
+@media ($media_max_sm) {
+header{height: auto;min-width: 320px;}
+	.navbar-header{float: none}
+	.navbar-toggle{display: block}
+	.navbar-collapse{border-top: 1px solid transparent;box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);max-width: 100% !important;
+		&.collapse{display: none !important;overflow-y: auto !important}
+	}
+	.navbar-nav {float: none !important;margin: 0;
+		> li {float: none;
+			> a {padding-top: 10px;padding-bottom: 10px}
+		}
+	}
+	.navbar-text{float: none;margin: 15px 0}
+	.navbar-collapse{
+		&.collapse.in{display: block !important}
+	}
+	.collapsing{overflow: hidden !important}
+}
+/**********************991menu***********************/
+
+/**********************carousel-fade***********************/
+.carousel-fade {
+    .carousel-inner {
+        .item{transition-property: opacity;}
+        .item,
+        .active.left,
+        .active.right {opacity: 0}
+        .active,
+        .next.left,
+        .prev.right {opacity: 1}
+        .next,
+        .prev,
+        .active.left,
+        .active.right {left: 0;transform: translate3d(0, 0, 0)}
+    }
+    .carousel-control {
+        z-index: 2;
+    }
+}
+/**********************carousel-fade***********************/
+
+
+
+
+@mixin transition_e($erd...) {
+  -webkit-transition: $erd;
+  -moz-transition: $erd;
+  -ms-transition: $erd;
+  -o-transition: $erd;
+  transition: $erd;
+}
+
+@mixin transition{
+-webkit-transition: .3s ease-in-out;
+-moz-transition: .3s ease-in-out;
+-ms-transition: .3s ease-in-out;
+-o-transition: .3s ease-in-out;
+transition: .3s ease-in-out;
+}
+
+@mixin flex{
+	display: -webkit-box; 
+	display: -moz-box;
+	display: -ms-flexbox;
+	display: -webkit-flex; 
+	display: flex;
+}
+
+@mixin radius{
+  -webkit-border-radius: 25px; 
+  -moz-border-radius: 25px; 
+  border-radius: 25px; 
+}
+
+@mixin radius30{
+  -webkit-border-radius: 30px; 
+  -moz-border-radius: 30px; 
+  border-radius: 30px; 
+}
+
+@mixin topTranslate{
+  -ms-transform: translate(0,-50%);
+  -webkit-transform: translate(0,-50%);
+  transform: translate(0,-50%);
+}
+
+@mixin placeholder {
+  &::-webkit-input-placeholder {@content}
+  &:-moz-placeholder           {@content}
+  &::-moz-placeholder          {@content}
+  &:-ms-input-placeholder      {@content}  
+}
+
+.backg{background-repeat: no-repeat !important;background-position: center center !important;background-size: cover !important}
+
+.navbar-inverse{border: none;border-radius: 0;background: none;margin:0;
+  button.navbar-toggle{margin: 0}
+  li.active a{background: none !important}
+}
+
+.center{max-width: 1330px;margin:0 auto;padding: 0 15px;width: 100%}
+

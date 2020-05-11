@@ -1,0 +1,77 @@
+@font-face {
+  font-family: 'icomoon';
+  src:  url('#{$fonts}/icomoon.eot?s7glnb');
+  src:  url('#{$fonts}/icomoon.eot?s7glnb#iefix') format('embedded-opentype'),
+        url('#{$fonts}/icomoon.ttf?s7glnb') format('truetype'),
+        url('#{$fonts}/icomoon.woff?s7glnb') format('woff'),
+        url('#{$fonts}/icomoon.svg?s7glnb#icomoon') format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+@font-face {
+    font-family: 'ceragrlight';
+    src: url('#{$fonts}/ceragrlight-webfont.eot');
+    src: url('#{$fonts}/ceragrlight-webfont.eot?#iefix') format('embedded-opentype'),
+         url('#{$fonts}/ceragrlight-webfont.woff2') format('woff2'),
+         url('#{$fonts}/ceragrlight-webfont.woff') format('woff'),
+         url('#{$fonts}/ceragrlight-webfont.ttf') format('truetype'),
+         url('#{$fonts}/ceragrlight-webfont.svg#ceragrlight') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'ceragrbold';
+    src: url('#{$fonts}/ceragrbold-webfont.eot');
+    src: url('#{$fonts}/ceragrbold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('#{$fonts}/ceragrbold-webfont.woff2') format('woff2'),
+         url('#{$fonts}/ceragrbold-webfont.woff') format('woff'),
+         url('#{$fonts}/ceragrbold-webfont.ttf') format('truetype'),
+         url('#{$fonts}/ceragrbold-webfont.svg#ceragrbold') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'caveatbold';
+    src: url('#{$fonts}/caveat-bold-webfont.eot');
+    src: url('#{$fonts}/caveat-bold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('#{$fonts}/caveat-bold-webfont.woff2') format('woff2'),
+         url('#{$fonts}/caveat-bold-webfont.woff') format('woff'),
+         url('#{$fonts}/caveat-bold-webfont.ttf') format('truetype'),
+         url('#{$fonts}/caveat-bold-webfont.svg#caveatbold') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'caveatregular';
+    src: url('#{$fonts}/caveat-regular-webfont.eot');
+    src: url('#{$fonts}/caveat-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('#{$fonts}/caveat-regular-webfont.woff2') format('woff2'),
+         url('#{$fonts}/caveat-regular-webfont.woff') format('woff'),
+         url('#{$fonts}/caveat-regular-webfont.ttf') format('truetype'),
+         url('#{$fonts}/caveat-regular-webfont.svg#caveatregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'playfair_displayregular';
+    src: url('#{$fonts}/playfairdisplay-regular-webfont.eot');
+    src: url('#{$fonts}/playfairdisplay-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('#{$fonts}/playfairdisplay-regular-webfont.woff2') format('woff2'),
+         url('#{$fonts}/playfairdisplay-regular-webfont.woff') format('woff'),
+         url('#{$fonts}/playfairdisplay-regular-webfont.ttf') format('truetype'),
+         url('#{$fonts}/playfairdisplay-regular-webfont.svg#playfair_displayregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'rubikregular';
+    src: url('#{$fonts}/rubik-regular-webfont.eot');
+    src: url('#{$fonts}/rubik-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('#{$fonts}/rubik-regular-webfont.woff2') format('woff2'),
+         url('#{$fonts}/rubik-regular-webfont.woff') format('woff'),
+         url('#{$fonts}/rubik-regular-webfont.ttf') format('truetype'),
+         url('#{$fonts}/rubik-regular-webfont.svg#rubikregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}

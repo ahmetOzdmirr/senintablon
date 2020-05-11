@@ -1,0 +1,82 @@
+<div class="popup-form">
+	<div class="popup-title">
+		<h4>İŞ ADRESİNİ DÜZENLE</h4>
+	</div>
+	<form method="post" action="https://jsonplaceholder.typicode.com/posts" autocomplete="off">
+		<div class="row">
+			<div class="col-md-6 col-sm-6">
+				<div class="wrap">
+					<p>Adınız</p>
+					<input type="text" name="name" placeholder="Lütfen adınızı yazın..." data-validation="custom" data-validation-regexp="^([a-z]+)$" data-validation-error-msg="Lütfen Adınızı yazın!">
+				</div>
+			</div>
+			<div class="col-md-6 col-sm-6">
+				<div class="wrap">
+					<p>Soyadınız</p>
+					<input type="text" name="surname" placeholder="Lütfen soyadınızı yazın..." data-validation="custom" data-validation-regexp="^([a-z]+)$" data-validation-error-msg="Lütfen Soyadınızı yazın!">
+				</div>
+			</div>
+			<div class="col-md-12">
+				<div class="wrap">
+					<p>Cep Telefonu</p>
+					<input type="text" name="mobilePhone" class="international-phone" data-validation="number" data-validation-error-msg="Lütfen Cep Telefonunuzu yazın!">
+				</div>
+			</div>
+			<div class="col-md-6 col-sm-6">
+				<div class="wrap">
+					<p>İl</p>
+					<div class="dropdown form-dropdown">
+						<input type="hidden" name="city" value="" data-validation="required" data-validation-error-msg="Lütfen İl seçin!">
+						<button class="btn dropdown-toggle" type="button" data-toggle="dropdown"><span class="button-text">Lütfen il seçin...</span><i class="icon-light-arrow-bottom"></i></button>
+						<ul class="dropdown-menu">
+							<li><a href="#">İstanbul</a></li>
+							<li><a href="#">Ankara</a></li>
+							<li><a href="#">İzmir</a></li>
+							<li><a href="#">Bursa</a></li>
+							<li><a href="#">Çanakkale</a></li>
+							<li><a href="#">Adana</a></li>
+							<li><a href="#">Konya</a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-6 col-sm-6">
+				<div class="wrap">
+					<p>İlçe</p>
+					<div class="dropdown form-dropdown">
+						<input type="hidden" name="district" value="" data-validation="required" data-validation-error-msg="Lütfen İlçe seçin!">
+						<button class="btn dropdown-toggle" type="button" data-toggle="dropdown"><span class="button-text">Lütfen ilçe seçin...</span><i class="icon-light-arrow-bottom"></i></button>
+						<ul class="dropdown-menu">
+							<li><a href="#">Ümraniye</a></li>
+							<li><a href="#">Kadıköy</a></li>
+							<li><a href="#">Üsküdar</a></li>
+							<li><a href="#">Çekmeköy</a></li>
+							<li><a href="#">Kartal</a></li>
+							<li><a href="#">Sarıyer</a></li>
+							<li><a href="#">Mecidiyeköy</a></li>
+							<li><a href="#">Bahçelievler</a></li>
+							<li><a href="#">Ataşehir</a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-12">
+				<div class="wrap">
+					<p>Adres Başlığı</p>
+					<input type="text" name="address-title" placeholder="Lütfen adres başlığınızı yazın..." data-validation="required" data-validation-error-msg="Lütfen Adres başlığı yazın!">
+				</div>
+			</div>
+			<div class="col-md-12">
+				<div class="wrap">
+					<p>Adres</p>
+					<textarea name="address" placeholder="Lütfen adresinizi yazın..." data-validation="required" data-validation-error-msg="Lütfen Adres yazın!"></textarea>
+				</div>
+			</div>
+			<div class="col-md-12">
+				<div class="form-button">
+					<button class="js-post">GÜNCELLE</button>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>
