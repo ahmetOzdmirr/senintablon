@@ -311,7 +311,6 @@ $(document).ready(function(){
     order_status.find('li').each(function(){
         $(this).click(function(){
             order_status_mobile_text.find('p').html($(this).find('p').html());
-            //console.log($(this).find('p').html());
         });
     });
 
@@ -355,10 +354,8 @@ $(document).ready(function(){
         first:false,
         last:false,
         onPageClick: function (event, page) {
-            //console.info(page + ' (from options)');
         }
         }).on('page', function (event, page) {
-        //console.info(page + ' (from event listening)');
     });
     //help accordion
     $(".panel-group .panel-heading a").click(function(){
@@ -413,7 +410,6 @@ $(document).ready(function(){
     //form-dropdown-button-text-and-input-value-change
     $('a.ajaxTrigger').fancybox({
         afterShow : function( instance, current ) {
-            //console.log(current);
             //dropdown-selected
             selectDrop();
             //international-phone
@@ -733,7 +729,9 @@ $("#duyuru").submit(function(e) {
 
 
 /* İmage edit */
-$(function() {
+var uploadFromİnstagram;
+var uploadFromFacebook;
+$(document).ready(function(){
     /*Size table*/
     $('.size-table .size-table__options li a').on('click', function(){
         const $this = $(this);
@@ -750,30 +748,208 @@ $(function() {
         e.preventDefault();
         allOption.removeClass("active");
         $this.parent().addClass("active");
-    })
+		})
+    /*Add image count to modal*/
+    const imageCount = $(".gallery-top").data("image-count");
+    $(".modal-edit-wrapper .image-count").append(imageCount);
+				
+		/*Steps*/
+    const MODAL_TYPES = {
+        'IMAGE_UPLOAD': 'image-upload',
+        'IMAGE_SELECTION': 'image-selection',
+        'IMAGE_EDIT': 'image-edit',
+        'IMAGE_LOADING': 'image-loading',
+    }
+		let openedModal;
+		const imageArray = [];
+		let stepCount = false;
+    const openModal = (modalType = MODAL_TYPES.IMAGE_UPLOAD) => {
+        $(`[data-modal-type=${ openedModal }]`).hide();
+        openedModal = modalType;
+        $(`[data-modal-type=${ openedModal }]`).show();
+    }
+		openModal();
+		uploadComputer();
 
-    const uploadFile = document.getElementById("drag-files-images");
-    const imagewrapper = document.getElementsByClassName("gallery-top")[0];
-    const imageCount = imagewrapper.getAttribute("data-image-count");
-    const uploadButton = document.getElementById("image-upload-btn");
-    const imageArray = [];
+		/*upload from computer*/
+		function uploadComputer() {
+			const uploadFile = $("#drag-files-images");
+		
+			uploadFile.on("change", async function(){
+				const imageReader = image =>
+					new Promise((resolve) => {
+						const reader = new FileReader();
+						reader.onload = (event) => resolve(event.target.result)
+						reader.readAsDataURL(image);
+					})
 
-    document.querySelector(".modal-edit-wrapper .image-count").innerHTML = imageCount;
-    uploadFile.addEventListener("change", function(){
-        const $this = this;
+			const $this = $(this);
+			imageArray.push(
+				...await Promise.all(Array.from($this[0].files).map(file => imageReader(file)))
+			);
+			imageCountControl(imageArray,"image-upload");
+			if(stepCount == true) {
+				openModal(MODAL_TYPES.IMAGE_EDIT);
+				editImage(imageArray)
+			}
+		})
+		}
+		/* upload from instagram*/
+		uploadFromİnstagram = function(){
+			var popupWidth = 700,
+					popupHeight = 500,
+					popupLeft = (window.screen.width - popupWidth) / 2,
+					popupTop = (window.screen.height - popupHeight) / 2;
+			var instaPopup = window.open("https://api.instagram.com/oauth/authorize?client_id=244488516657772&redirect_uri=https://ahmet.senintablon.com/urun-detay.html&scope=user_profile,user_media&response_type=code",'', 'width='+popupWidth+',height='+popupHeight+',left='+popupLeft+',top='+popupTop+'');
+			instaPopup.open();
+			imageArray.length = 0;
+			var interval = setInterval(function() {
+					try {
+							if(instaPopup.location.search) {
+								const code = instaPopup.location.search.split("?code=")[1];
+								let formData = new FormData();
+								formData.append('client_id', '244488516657772');
+								formData.append('client_secret', '959008d01cf361cafe4e8e6510b2cca6');
+								formData.append('grant_type', 'authorization_code');
+								formData.append('redirect_uri', 'https://ahmet.senintablon.com/urun-detay.html');
+								formData.append('code', code);
+						
+								const getImages = (token) => {
+										fetch(`https://graph.instagram.com/me/media?fields=id,caption,thumbnail_url,media_url,media_type&access_token=${token}`, {
+										method: 'get',
+										}).then(res => res.json())
+										.then(({ data }) => {
+												openModal(MODAL_TYPES.IMAGE_SELECTION);  
+												const listImageContent = $('.list-image-wrapper');
+												for (let index = 0; index < data.length; index++) {
+														const media = data[index];
+														if (media.media_type === "IMAGE") {
+															listImageContent.append("<a class='list-image-wrapper__item' href='#'><div class='caption'><img src="+media.media_url+" alt=''></div></a>");
+														}
+												}
+												
+										})
+								}
+								
+								fetch('https://api.instagram.com/oauth/access_token', {
+										method: 'post',
+										body: formData
+								}).then(res => res.json())
+										.then(data => {
+												getImages(data['access_token']);
+												instaPopup.close()
+								})
+								clearInterval(interval);
+							}
+					}
+					catch(evt) {
+					}
+			}, 100);
+		}
+		/* upload from facebook*/
+		uploadFromFacebook = function(){
+			
+		}
+		/* upload images control*/
+		function imageCountControl(images, defaultModal){
+			if(images.length > 0 && images.length < imageCount) {
+				$(`[data-modal-type=${ defaultModal }]`).find(".modal-header").html("<p class='upload-error-message color-text'><b>"+images.length+"</b> adet dosya seçildi. <b>"+(imageCount - images.length)+"</b> adet daha yükleyin</p>");
+			}else if(images.length > imageCount){
+				$(`[data-modal-type=${ defaultModal }]`).find(".modal-header").html("<p class='upload-error-message color-text'>En fazla <b>"+imageCount+"</b> dosya yükleyebilirsiniz</p>");
+				imageArray.length= 0;
+			}else {
+				stepCount = true;
+			}
+		}
+		/* images append from list wrapper*/
+		function editImage(data) {
+			const editImagesWrapper = $('.design-product-content .design-product-content__grid-container');
+			for (let index = 0; index < data.length; index++) {
+				editImagesWrapper.append(`<div style="grid-area: photo${index + 1}"><img id="${index + 1}" src='${data[index]}' /></div>`)
+			}
+		}
+		/* edit pages image select*/
+		$(document).on("click",".design-product-content__grid-container div",function(e){
+				e.preventDefault();
+				const $this = $(this);
+				$('.design-product-content__images div').removeClass("selected");
+                $this.toggleClass("selected");
+                
+                $('#rotateRange').val(document.getElementById($this.find("img").attr("id")).getAttribute("data-rotate"))
+                $('#scaleRange').val(document.getElementById($this.find("img").attr("id")).getAttribute("data-scale"))
 
-        for( var i=0; i<$this.files.length; i++) {
-            imageArray.push($this.files[i])
-        }
-        if(imageArray.length > 0 && imageArray.length < imageCount) {
-            document.querySelector(".modal-header__error-arae").innerHTML= "<b>"+imageArray.length+"</b> adet dosya seçildi. <b>"+(imageCount - imageArray.length)+"</b> adet daha yükleyin";
-        }else {
-            uploadButton.remove();
-            document.querySelector(".gallery-detail-wrapper .button-wrapper").insertAdjacentHTML("beforeend", "<a href='#' class='add-basket'>Sepete Ekleyin</a>");
-            imagewrapper.insertAdjacentHTML('beforeend', '<a href="#" class="upload-picture">Tablonu Düzenle</a>')
-            document.querySelector(".modal-header__error-arae").innerHTML= "";
-        }
-    })
+		})
+		/* Select images from list*/
+		$(document).on("click",".modal-edit-wrapper .list-image-wrapper a",function(e){
+			e.preventDefault();
+			const $this = $(this);
+			$this.toggleClass("selected");
+		})
+		/* Control select images count and open edit modal*/
+		$(document).on("click",".edit-instagram-images-btn",function(e){
+			e.preventDefault();
+			var count = 0;
+			imageArray.length = 0;
+			$('.list-image-wrapper a').each(function(){
+				if($(this).hasClass("selected")) {
+					imageArray.push($(this).find("img").attr("src"))
+					count ++;
+				}
+			})
+			imageCountControl(imageArray,"image-selection");
+			if(stepCount == true) {
+				openModal(MODAL_TYPES.IMAGE_EDIT);
+				editImage(imageArray)
+			}
+		})
+		/* cancel upload images list modal  */
+		$(document).on("click",".cancel-instagram-images-btn",function(e){
+			e.preventDefault();
+			imageArray.length = 0;
+			openModal(MODAL_TYPES.IMAGE_UPLOAD);
+		});
+		/* close modal and refresh page*/
+		$('#editPhotos').on('hidden.bs.modal', function () {
+			imageArray.length = 0;
+			location.reload();
+		});
+		$('#scaleRange').on("input change", function() {
+            const $selectionWrapper = $(".design-product-content__grid-container div.selected img");
+            scaleValue = this.value;
+            const imageId = $selectionWrapper.attr('id');
+            const rotateValue = document.getElementById(imageId).getAttribute("data-rotate") || 0;
+            $selectionWrapper.attr("data-scale", scaleValue);
+            $selectionWrapper.attr("data-rotate", rotateValue);
+		    $selectionWrapper.css({
+				'transform': `translate(-50%, -50%) scale(${scaleValue}, ${scaleValue}) rotate( ${rotateValue}deg)`
+            })
+		});
+		$('#rotateRange').on("input change", function() {
+            const $selectionWrapper = $(".design-product-content__grid-container div.selected img");
+            rotateValue = this.value;
+            const imageId =$selectionWrapper.attr('id');
+            const scaleValue = document.getElementById(imageId).getAttribute("data-scale") || 1;
+            $selectionWrapper.attr("data-scale", scaleValue);
+            $selectionWrapper.attr("data-rotate", rotateValue);
+			$selectionWrapper.css({
+				'transform': `translate(-50%, -50%) scale(${scaleValue},${scaleValue}) rotate(${rotateValue}deg)`
+			})
+		});
+
+		/* Table grid design*/
+		const tableType = $('.gallery-top').data("table-type");
+		const TABLE_TYPES = {
+			"1" : {gridTemplateAreas: `'photo1 photo1'`, width: '347px', height: '232px'},
+			"2" : {gridTemplateAreas: `'photo1' 'photo1'`, width: '232px', height: '347px'},
+			"3" : {gridTemplateAreas: `'photo1 photo1'`, width: '208px', height: '208px'},
+			"4" : {gridTemplateAreas: `'photo1 photo1 photo1'`, width: '300px', height: '150px'},
+			"5" : {gridTemplateAreas: `'photo1 photo2 photo3 photo4 photo5' 'photo6 photo7 photo8 photo9 photo10' 'photo11 photo12 photo13 photo14 photo15' 'photo16 photo17 photo18 photo19 photo20'`, width: '346px', height: '236px'},
+			"6" : {gridTemplateAreas: `'photo1 photo1' 'photo2 photo3'`, width: '232px', height: '347px'},
+			"7" : {gridTemplateAreas: `'photo1 photo2 photo3 photo4' 'photo5 photo5 photo5 photo5' 'photo6 photo7 photo8 photo9'`, width: '280px', height: '280px'},
+			"8" : {gridTemplateAreas: `'photo1 photo2 photo3' 'photo1 photo4 photo3'`, width: '270px', height: '135px'},
+		}
+        $('#table-style').css(TABLE_TYPES[tableType]);
+        
+        /* detect mouse moves on picture*/
+      
 });
-
-

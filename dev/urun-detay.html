@@ -199,7 +199,7 @@
 				<div class="row">
 					<div class="gallery-image-wrapper">
 						<div class="gallery-top-contents">
-							<div class="swiper-container gallery-top" data-image-count="5">
+							<div class="swiper-container gallery-top" data-image-count="3" data-table-type="6">
 								<div class="swiper-wrapper">
 									<div class="swiper-slide">
 											<figure style="background-image:url(assets/images/products/tablo-1.jpg)">
@@ -389,18 +389,16 @@
 						<div class="modal fade" id="editPhotos" tabindex="-1" role="dialog" aria-hidden="true">
 							<div class="modal-dialog modal-edit-wrapper">
 								<div class="modal-content">
-									<div class="modal-header">
-										<h1><span class="color-text">"<span class="image-count">3</span> ADET"</span> FOTOĞRAF YÜKLEYİNİZ</h1>
-										<p>Fotoğraflarınızı bu alana sürükleyip bırakabilir veya aşağıda ki butonlara tıklayarakta yapabilirsiniz.
-										</p>
-										<p>Sıralama veya düzenleme işlemleri bir sonra ki adımda yapabilirsiniz.</p>
+									<div id="step-1" data-modal-type="image-upload">
+										<div class="modal-header">
+											<h1><span class="color-text">"<span class="image-count"></span> ADET"</span> FOTOĞRAF YÜKLEYİNİZ</h1>
+											<p>Fotoğraflarınızı bu alana sürükleyip bırakabilir veya aşağıda ki butonlara tıklayarakta yapabilirsiniz.</p>
+											<p>Sıralama veya düzenleme işlemleri bir sonra ki adımda yapabilirsiniz.</p>
+										</div>
 										<button type="button" class="close pull-right fade in" data-dismiss="modal">
 											<span class="icon icon-close"></span>
 											<span class="sr-only">Kapat</span>
 										</button>
-										<p class="modal-header__error-arae"></p>
-									</div>
-									<div id="step-1">
 										<div class="add-files-wrapper">
 											<div class="add-files">
 												<a class="add-files__item" id="upload-computer">
@@ -421,8 +419,59 @@
 											</div>
 										</div>
 									</div>
-									<div id="step-2">
-
+									<div id="step-2" data-modal-type="image-selection">
+										<div class="modal-header">
+											<h1><span class="color-text">"<span class="image-count"></span> ADET"</span> FOTOĞRAF YÜKLEYİNİZ</h1>
+											<p>Instagram hesabınızdan seçiniz…</p>
+										</div>
+										<button type="button" class="close pull-right fade in" data-dismiss="modal">
+											<span class="icon icon-close"></span>
+											<span class="sr-only">Kapat</span>
+										</button>
+										<div class="list-image-wrapper">
+											
+										</div>
+										<div class="action-buttons">
+											<button type="button" class="prev-button cancel-instagram-images-btn">Vazgeç</button>
+											<button type="button" class="next-button edit-instagram-images-btn">İleri</button>
+										</div>
+									</div>
+									<div id="step-3" data-modal-type="image-edit">
+										<div class="modal-header">
+											<h1>TABLONUZU DÜZENLEYEBİLİRSİNİZ</h1>
+											<p>Görselleri sağa sola hareket ettirerek kadrajını ayarlayabilirsiniz.</p>
+											<p>Sağ üst köşede bulunan araçlarlada uzaklaştırıp yakınlaştırabilirsiniz. Yön tuşları ilede görselleri çevirebilirsiniz.</p>
+										</div>
+										<button type="button" class="close pull-right fade in" data-dismiss="modal">
+											<span class="icon icon-close"></span>
+											<span class="sr-only">Kapat</span>
+										</button>
+										<div class="design-product-content">
+											<div class="design-product-content__images">
+												<div class="design-product-content__grid-container" id="table-style">
+													
+												</div>
+											</div>
+											<div class="design-product-content__buttons">
+												<div class="edit-buttons">
+													<div class="rotate-range">
+														<label for="#rotateRange">Çevir</label>
+														<input type="range" min="-180" max="180" step="5" id="rotateRange" />
+													</div>
+													<div class="scale-range">
+														<label for="#scaleRange">Yakınlaştır - Uzaklaştır</label>
+														<input type="range" min="0.1" max="2" step="0.1" id="scaleRange" />
+													</div>
+												</div>
+												<div class="action-buttons">
+													<button type="button" class="next-button">Kaydet</button>
+													<button type="button" class="prev-button">Vazgeç</button>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div id="step-4" data-modal-type="image-loading">
+										<h1>test2</h1>
 									</div>
 								</div>
 							</div>
