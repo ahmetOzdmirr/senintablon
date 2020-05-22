@@ -21,6 +21,7 @@ var paths = {
     scriptsLib: [
         jsLibPaths + 'snippet.js',
         jsLibPaths + 'jquery.min.js',
+        jsLibPaths + 'jquery-ui.min.js',
         jsLibPaths + 'bootstrap.min.js',
         jsLibPaths + 'bootstrap-select.min.js',
         jsLibPaths + 'jquery.fancybox.min.js',

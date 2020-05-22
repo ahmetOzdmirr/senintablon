@@ -771,6 +771,10 @@ $(document).ready(function(){
 		openModal();
 		uploadComputer();
 
+		/*Trigger upload computer icon*/
+		$('#upload-computer').on("click", function(){
+			$('#drag-files-images').trigger("click")
+		})
 		/*upload from computer*/
 		function uploadComputer() {
 			const uploadFile = $("#drag-files-images");
@@ -790,7 +794,8 @@ $(document).ready(function(){
 			imageCountControl(imageArray,"image-upload");
 			if(stepCount == true) {
 				openModal(MODAL_TYPES.IMAGE_EDIT);
-				editImage(imageArray)
+				$('.cancel-edit-images-btn').attr("data-from","from-computer")
+				imageListing(imageArray)
 			}
 		})
 		}
@@ -813,24 +818,24 @@ $(document).ready(function(){
 								formData.append('grant_type', 'authorization_code');
 								formData.append('redirect_uri', 'https://ahmet.senintablon.com/urun-detay.html');
 								formData.append('code', code);
-						
 								const getImages = (token) => {
 										fetch(`https://graph.instagram.com/me/media?fields=id,caption,thumbnail_url,media_url,media_type&access_token=${token}`, {
 										method: 'get',
 										}).then(res => res.json())
 										.then(({ data }) => {
-												openModal(MODAL_TYPES.IMAGE_SELECTION);  
-												const listImageContent = $('.list-image-wrapper');
-												for (let index = 0; index < data.length; index++) {
-														const media = data[index];
-														if (media.media_type === "IMAGE") {
-															listImageContent.append("<a class='list-image-wrapper__item' href='#'><div class='caption'><img src="+media.media_url+" alt=''></div></a>");
-														}
+												if (data.length > 0) {
+													openModal(MODAL_TYPES.IMAGE_SELECTION);  
+													const listImageContent = $('.list-image-wrapper');
+													listImageContent.html("");
+													for (let index = 0; index < data.length; index++) {
+															const media = data[index];
+															if (media.media_type === "IMAGE") {
+																listImageContent.append("<a class='list-image-wrapper__item' href='#'><div class='caption' data-url="+media.media_url+" style='background: url("+media.media_url+") no-repeat center center'></div></a>");
+															}
+													}
 												}
-												
 										})
 								}
-								
 								fetch('https://api.instagram.com/oauth/access_token', {
 										method: 'post',
 										body: formData
@@ -848,36 +853,137 @@ $(document).ready(function(){
 		}
 		/* upload from facebook*/
 		uploadFromFacebook = function(){
-			
+			var popupWidth = 700,
+					popupHeight = 500,
+					popupLeft = (window.screen.width - popupWidth) / 2,
+					popupTop = (window.screen.height - popupHeight) / 2;
+			var facebookPopup = window.open("https://www.facebook.com/dialog/oauth?client_id=866313223882155&redirect_uri=https://ahmet.senintablon.com/urun-detay.html&scope=user_photos",'', 'width='+popupWidth+',height='+popupHeight+',left='+popupLeft+',top='+popupTop+'');
+			facebookPopup.open();
+			imageArray.length = 0;
+			var interval = setInterval(function() {
+					try {
+							if(facebookPopup.location.search) {
+								const code = facebookPopup.location.search.split("?code=")[1];
+								let formData = new FormData();
+								formData.append('client_id', '866313223882155');
+								formData.append('client_secret', 'b896887fae1e65bca659ce1d57200c85');
+								formData.append('redirect_uri', 'https://ahmet.senintablon.com/urun-detay.html');
+								formData.append('code', code);
+								const getImages = (token) => {
+									fetch(`https://graph.facebook.com/me/photos?fields=images&type=uploaded&access_token=${token}`, {
+										method: 'get',
+										}).then(res => res.json())
+										.then(({ data }) => {
+											if (data.length > 0) {
+												openModal(MODAL_TYPES.IMAGE_SELECTION);  
+												const listImageContent = $('.list-image-wrapper');
+												listImageContent.html("");
+												for (let index = 0; index < data.length; index++) {
+														const media = data[index].images[0].source;
+														listImageContent.append("<a class='list-image-wrapper__item' href='#'><div class='caption' data-url="+media+" style='background: url("+media+") no-repeat center center'></div></a>");
+												}
+											} 
+										})
+								}
+								
+								fetch('https://graph.facebook.com/oauth/access_token?', {
+										method: 'post',
+										body: formData
+								}).then(res => res.json())
+										.then(data => {
+												getImages(data['access_token']);
+												facebookPopup.close();
+								})
+								clearInterval(interval);
+							}
+					}
+					catch(evt) {
+					}
+			}, 100);
 		}
 		/* upload images control*/
 		function imageCountControl(images, defaultModal){
-			if(images.length > 0 && images.length < imageCount) {
-				$(`[data-modal-type=${ defaultModal }]`).find(".modal-header").html("<p class='upload-error-message color-text'><b>"+images.length+"</b> adet dosya seçildi. <b>"+(imageCount - images.length)+"</b> adet daha yükleyin</p>");
+			if(images.length >= 0 && images.length < imageCount) {
+				$(`[data-modal-type=${ defaultModal }]`).find(".modal-header").find(".upload-error-message").html("<b>"+images.length+"</b> adet dosya seçildi. <b>"+(imageCount - images.length)+"</b> adet daha yükleyin");
 			}else if(images.length > imageCount){
-				$(`[data-modal-type=${ defaultModal }]`).find(".modal-header").html("<p class='upload-error-message color-text'>En fazla <b>"+imageCount+"</b> dosya yükleyebilirsiniz</p>");
+				$(`[data-modal-type=${ defaultModal }]`).find(".modal-header").find(".upload-error-message").html("En fazla <b>"+imageCount+"</b> dosya yükleyebilirsiniz");
 				imageArray.length= 0;
 			}else {
 				stepCount = true;
 			}
 		}
 		/* images append from list wrapper*/
-		function editImage(data) {
+		function imageListing(data) {
 			const editImagesWrapper = $('.design-product-content .design-product-content__grid-container');
 			for (let index = 0; index < data.length; index++) {
-				editImagesWrapper.append(`<div style="grid-area: photo${index + 1}"><img id="${index + 1}" src='${data[index]}' /></div>`)
+				editImagesWrapper.append(`<div style="grid-area: photo${index + 1}"><img id="${index + 1}" src='${data[index]}' data-scale="1.005" data-rotate="0" draggable="false"/></div>`)
 			}
 		}
 		/* edit pages image select*/
 		$(document).on("click",".design-product-content__grid-container div",function(e){
 				e.preventDefault();
 				const $this = $(this);
+				const selectedImageId = document.getElementById($this.find("img").attr("id"));
+				
 				$('.design-product-content__images div').removeClass("selected");
-                $this.toggleClass("selected");
-                
-                $('#rotateRange').val(document.getElementById($this.find("img").attr("id")).getAttribute("data-rotate"))
-                $('#scaleRange').val(document.getElementById($this.find("img").attr("id")).getAttribute("data-scale"))
-
+				$this.toggleClass("selected");
+				
+				$('#rotateRange').val(selectedImageId.getAttribute("data-rotate"));
+				$('#scaleRange').val(selectedImageId.getAttribute("data-scale"));
+				
+				/* images moves*/
+				const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+				dragElement(selectedImageId);
+				function dragElement(elmnt) {
+					var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+					if(isMobile == true) {
+						elmnt.ontouchstart = dragMouseDown;
+					}else {
+						elmnt.onmousedown = dragMouseDown;
+					}
+				
+					function dragMouseDown(e) {
+						e = e || window.event;
+						if(isMobile == true) {
+							pos3 = e.touches[0].clientX;
+							pos4 = e.touches[0].clientY;
+							document.ontouchend = closeDragElement;
+							document.ontouchmove = elementDrag;
+						}else {
+							e.preventDefault();
+							pos3 = e.clientX;
+							pos4 = e.clientY;
+							document.onmouseup = closeDragElement;
+							document.onmousemove = elementDrag;
+						}
+					}
+					function elementDrag(e) {
+						e = e || window.event;
+						if(isMobile == true) {
+							pos1 = pos3 - e.touches[0].clientX;
+							pos2 = pos4 - e.touches[0].clientY;
+							pos3 = e.touches[0].clientX;
+							pos4 = e.touches[0].clientY;
+						}else {
+							e.preventDefault();
+							pos1 = pos3 - e.clientX;
+							pos2 = pos4 - e.clientY;
+							pos3 = e.clientX;
+							pos4 = e.clientY;
+						}
+						elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+						elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+					}
+					function closeDragElement() {
+						if(isMobile == true) {
+							document.ontouchend = null;
+							document.ontouchmove = null;
+						}else {
+							document.onmouseup = null;
+							document.onmousemove = null;
+						}
+					}
+				}
 		})
 		/* Select images from list*/
 		$(document).on("click",".modal-edit-wrapper .list-image-wrapper a",function(e){
@@ -886,27 +992,66 @@ $(document).ready(function(){
 			$this.toggleClass("selected");
 		})
 		/* Control select images count and open edit modal*/
-		$(document).on("click",".edit-instagram-images-btn",function(e){
+		$(document).on("click",".save-select-images-btn",function(e){
 			e.preventDefault();
 			var count = 0;
 			imageArray.length = 0;
 			$('.list-image-wrapper a').each(function(){
 				if($(this).hasClass("selected")) {
-					imageArray.push($(this).find("img").attr("src"))
+					imageArray.push($(this).find(".caption").data("url"))
 					count ++;
 				}
 			})
 			imageCountControl(imageArray,"image-selection");
 			if(stepCount == true) {
 				openModal(MODAL_TYPES.IMAGE_EDIT);
-				editImage(imageArray)
+				imageListing(imageArray)
 			}
 		})
 		/* cancel upload images list modal  */
-		$(document).on("click",".cancel-instagram-images-btn",function(e){
-			e.preventDefault();
+		$(document).on("click",".delete-select-images-btn",function(e){
 			imageArray.length = 0;
 			openModal(MODAL_TYPES.IMAGE_UPLOAD);
+		});
+		/* cancel edit images modal  */
+		$(document).on("click",".cancel-edit-images-btn",function(e){
+			e.preventDefault();
+			const dataFrom = $(this).data("from");
+			$('.modal-edit-wrapper .upload-error-message').html("");
+			$('.design-product-content__grid-container').html("");
+			$('#rotateRange').val("0");
+			$('#scaleRange').val("1.005");
+			stepCount = false;
+			if(dataFrom == 'from-computer'){
+				imageArray.length = 0;
+				openModal(MODAL_TYPES.IMAGE_UPLOAD);
+			}else {
+				openModal(MODAL_TYPES.IMAGE_SELECTION);
+			}
+		});
+		/* save all images and close modal  */
+		$(document).on("click",".save-all-images",function(e){
+			openModal(MODAL_TYPES.IMAGE_LOADING);
+			function progress(){
+				let progressBar = $('.progress-bar-wrapper .bar');
+				let progressValue = $('.progress-bar-wrapper .bar .value');
+				let count = 0;
+				let progress = 0;
+				let setId = setInterval(frame, 150);
+
+				function frame(){
+					if(progress == 100 && count == 100) {
+						clearInterval(setId);
+						$("#editPhotos").modal('hide');
+					}else {
+						progress += 1;
+						count +=1;
+						progressBar.css("width", progress + '%');
+						progressValue.html(count + '%');
+					}
+				}
+			}
+		 progress();
 		});
 		/* close modal and refresh page*/
 		$('#editPhotos').on('hidden.bs.modal', function () {
@@ -928,14 +1073,13 @@ $(document).ready(function(){
             const $selectionWrapper = $(".design-product-content__grid-container div.selected img");
             rotateValue = this.value;
             const imageId =$selectionWrapper.attr('id');
-            const scaleValue = document.getElementById(imageId).getAttribute("data-scale") || 1;
+            const scaleValue = document.getElementById(imageId).getAttribute("data-scale") || 1.005;
             $selectionWrapper.attr("data-scale", scaleValue);
             $selectionWrapper.attr("data-rotate", rotateValue);
 			$selectionWrapper.css({
 				'transform': `translate(-50%, -50%) scale(${scaleValue},${scaleValue}) rotate(${rotateValue}deg)`
 			})
 		});
-
 		/* Table grid design*/
 		const tableType = $('.gallery-top').data("table-type");
 		const TABLE_TYPES = {
@@ -948,8 +1092,7 @@ $(document).ready(function(){
 			"7" : {gridTemplateAreas: `'photo1 photo2 photo3 photo4' 'photo5 photo5 photo5 photo5' 'photo6 photo7 photo8 photo9'`, width: '280px', height: '280px'},
 			"8" : {gridTemplateAreas: `'photo1 photo2 photo3' 'photo1 photo4 photo3'`, width: '270px', height: '135px'},
 		}
-        $('#table-style').css(TABLE_TYPES[tableType]);
-        
-        /* detect mouse moves on picture*/
-      
+    $('#table-style').css(TABLE_TYPES[tableType]);
+
+
 });
